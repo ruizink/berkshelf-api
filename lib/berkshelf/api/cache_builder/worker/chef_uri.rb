@@ -2,7 +2,7 @@ module Berkshelf::API
   class CacheBuilder
     module Worker
       class ChefUri < Worker::Base
-        worker_type "chef_url"
+        worker_type "chef_uri"
 
         finalizer :finalize_callback
 
