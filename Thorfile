@@ -98,6 +98,6 @@ class Default < Thor
     end
 
     def version
-      "v#{Berkshelf::API::VERSION}"
+      "v#{Berkshelf::API::VERSION}p"
     end
 end
