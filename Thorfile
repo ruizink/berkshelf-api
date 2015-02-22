@@ -60,11 +60,11 @@ class Default < Thor
   desc "release", "release the packaged software to Github"
   def release
     say "releasing..."
-    begin
-      invoke "gem:release"
-    rescue => ex
-      raise ex unless ex.message.scan(/Repushing of gem versions is not allowed/).any?
-    end
+#    begin
+#      invoke "gem:release"
+#    rescue => ex
+#      raise ex unless ex.message.scan(/Repushing of gem versions is not allowed/).any?
+#    end
 
     begin
       release = github_client.create_release(repository, version)
