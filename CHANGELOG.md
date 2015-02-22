@@ -1,3 +1,7 @@
+# 2.1.2
+* Enhancements
+  * Added new endpoint type `chef_uri`
+
 # 2.1.1
 
 * Bug Fixes
