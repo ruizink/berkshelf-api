@@ -1,3 +1,7 @@
+# 2.1.3
+* Enhancements
+  * Added new endpoint type `gitlab`
+
 # 2.1.2
 * Enhancements
   * Added new endpoint type `chef_uri`
