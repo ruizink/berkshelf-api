@@ -115,7 +115,12 @@ module Berkshelf::API
 
           cookbook_metadata = Ridley::Chef::Cookbook::Metadata.new
           cookbook_metadata.instance_eval(content)
-          cookbook_metadata
+          if cookbook_metadata.name == ''
+            log.warn("#{self}: Ignoring Project id #{project_id}. Couldn't get a cookbook name from metadata.")
+            nil
+          else
+            cookbook_metadata
+          end
         rescue ::GitlabClient::NoSuchFile => ex
           log.warn("#{self}: #{ex}")
           nil
