@@ -30,4 +30,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'buff-config',    '~> 1.0'
   spec.add_dependency 'octokit',        '~> 3.0'
   spec.add_dependency 'semverse',       '~> 1.0'
+  spec.add_dependency 'archive-tar-minitar', '~> 0.5.2'
 end

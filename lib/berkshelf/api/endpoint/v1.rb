@@ -1,3 +1,8 @@
+require 'zlib'
+require 'archive/tar/minitar'
+require 'pathname'
+include Archive::Tar
+
 module Berkshelf::API
   module Endpoint
     class V1 < Endpoint::Base
@@ -29,6 +34,47 @@ module Berkshelf::API
           uptime: Time.now.utc - Application.start_time,
         }
       end
+
+      desc "cookbook download"
+      namespace 'cookbooks' do
+        namespace ':cookbook_name', :requirements => { :cookbook_name => /.*/} do
+          params do
+            optional :nocache, type: Boolean
+          end
+          get ':cookbook_version', :requirements => { :cookbook_version => /[0-9]+\.[0-9]+\.[0-9]+/} do
+#             { params: params }
+            content_type 'application/octet-stream'
+            header 'Content-Disposition', "attachment; filename='#{params[:cookbook_name]}-#{params[:cookbook_version]}.tar.gz'"
+            cookbook_fullname = "#{params[:cookbook_name]}-#{params[:cookbook_version]}"
+            cookbook_path = Dir.mktmpdir("#{cookbook_fullname}_")
+            pn = Pathname.new(cookbook_path)
+
+            # Skip cookbook download, in case of a cache hit or force cookbook download if nocache specified
+            if (not File.readable?("#{pn.dirname}/#{cookbook_fullname}.tar.gz")) or params[:nocache]
+              credentials = {
+                server_url: Berkshelf::API::Application.config.endpoints[0].options.chef_url,
+                client_name: Berkshelf::API::Application.config.endpoints[0].options.client_name,
+                client_key: Berkshelf::API::Application.config.endpoints[0].options.client_key,
+                ssl: {
+                  verify: Berkshelf::API::Application.config.endpoints[0].options.ssl_verify
+                }
+              }
+              # Download cookbook
+              r = Ridley.new(credentials)
+              r.cookbook.download(params[:cookbook_name], params[:cookbook_version], cookbook_path)
+              # create tarball
+              cwd = Dir.pwd
+              Dir.chdir(pn.dirname)
+              tgz = Zlib::GzipWriter.new(File.open("#{cookbook_fullname}.tar.gz", 'wb'))
+              Minitar.pack(pn.basename, tgz)
+              Dir.chdir(cwd)
+            end
+            # Serve the binary file
+            File.binread("#{pn.dirname}/#{cookbook_fullname}.tar.gz")
+          end
+        end
+      end
+
     end
   end
 end

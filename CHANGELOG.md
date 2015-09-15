@@ -1,3 +1,7 @@
+# 2.2.0
+* Enhancements
+  * Added new Grape route to download cookbooks (acting as a broker to chef-server)
+
 # 2.1.3
 * Enhancements
   * Added new endpoint type `gitlab`

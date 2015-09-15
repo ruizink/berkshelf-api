@@ -10,6 +10,7 @@ group :development do
   gem 'fuubar', '~> 1.1'
   gem 'redcarpet', platforms: :ruby
   gem 'yard'
+  gem 'archive-tar-minitar'
 
   gem 'guard', '~> 1.8'
   gem 'guard-rspec'
