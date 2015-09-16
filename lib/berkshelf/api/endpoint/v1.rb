@@ -1,6 +1,7 @@
 require 'zlib'
 require 'archive/tar/minitar'
 require 'pathname'
+require 'fileutils'
 include Archive::Tar
 
 module Berkshelf::API
@@ -69,6 +70,8 @@ module Berkshelf::API
               Minitar.pack(pn.basename, tgz)
               Dir.chdir(cwd)
             end
+            # Delete tmpdir
+            FileUtils.rm_r(cookbook_path)
             # Serve the binary file
             File.binread("#{pn.dirname}/#{cookbook_fullname}.tar.gz")
           end
